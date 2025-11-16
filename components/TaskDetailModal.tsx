@@ -107,12 +107,12 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, users, onClose,
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4 transition-opacity duration-300"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4 transition-opacity duration-300"
       onClick={handleOverlayClick}
       aria-modal="true"
       role="dialog"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col transition-transform duration-300 transform scale-95 opacity-0 animate-scale-in">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl-soft w-full max-w-2xl max-h-[90vh] flex flex-col transition-transform duration-300 transform scale-95 opacity-0 animate-scale-in">
         <style>{`
           @keyframes scale-in {
             from { transform: scale(0.95); opacity: 0; }
@@ -129,7 +129,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, users, onClose,
               className="text-xl font-bold text-gray-800 dark:text-gray-100 w-full border-none bg-transparent focus:ring-2 focus:ring-primary rounded disabled:bg-transparent"
               disabled={!canEdit}
             />
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
             <XIcon className="h-6 w-6" />
             <span className="sr-only">Close modal</span>
           </button>
@@ -167,7 +167,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, users, onClose,
                      {assigneeIds.length === 0 && <span className="text-sm text-gray-500">Add assignees</span>}
                 </button>
                  {isAssigneeDropdownOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg-soft">
                   {Object.values(users).map(user => (
                     <label key={user.id} className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                       <input type="checkbox" checked={assigneeIds.includes(user.id)} onChange={() => toggleAssignee(user.id)} className="form-checkbox h-4 w-4 text-primary rounded focus:ring-primary"/>
@@ -272,11 +272,11 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, users, onClose,
           </div>
         </div>
 
-        <div className="flex justify-end p-4 border-t dark:border-gray-700 flex-shrink-0">
+        <div className="flex justify-end p-4 border-t dark:border-gray-700 flex-shrink-0 bg-gray-50 dark:bg-gray-800/50 rounded-b-lg">
           <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800"
+              className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-sm font-medium rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800"
           >
               Cancel
           </button>
@@ -284,7 +284,7 @@ const TaskDetailModal: React.FC<TaskDetailModalProps> = ({ task, users, onClose,
             type="button"
             onClick={handleSubmit}
             disabled={!canEdit}
-            className="ml-3 px-4 py-2 bg-primary text-white text-sm font-medium rounded-md hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:bg-gray-400 dark:disabled:bg-gray-500 disabled:cursor-not-allowed"
+            className="ml-3 px-4 py-2 bg-primary-gradient text-white text-sm font-medium rounded-md shadow-md-soft hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
           >
             Save Changes
           </button>

@@ -44,3 +44,5 @@ export interface ProjectData {
 export interface AllProjectsData {
   [projectName: string]: ProjectData;
 }
+
+export type ViewType = 'board' | 'profile' | 'settings' | 'calendar';

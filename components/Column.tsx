@@ -87,21 +87,21 @@ const Column: React.FC<ColumnProps> = ({ column, tasks, users, onDragEnd, onAddT
 
   return (
     <div
-      className="w-full md:w-72 bg-gray-100 dark:bg-gray-700/50 rounded-lg flex flex-col flex-shrink-0"
+      className="w-full md:w-72 bg-gray-500/5 dark:bg-white/5 rounded-xl flex flex-col flex-shrink-0 border border-black/5 dark:border-white/5"
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="p-3 flex justify-between items-center">
+      <div className="p-3 flex justify-between items-center border-b border-black/5 dark:border-white/5">
         <h3 className="text-md font-semibold text-gray-700 dark:text-gray-200">{column.title}</h3>
         <div className="flex items-center">
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-full px-2 py-0.5">{tasks.length}</span>
-          <button className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-300 bg-gray-500/10 dark:bg-white/10 rounded-full px-2 py-0.5">{tasks.length}</span>
+          <button className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 rounded-md hover:bg-gray-500/10 dark:hover:bg-white/10">
             <MoreHorizIcon className="h-5 w-5" />
           </button>
         </div>
       </div>
-      <div className={`task-list p-1 space-y-2 overflow-y-auto flex-1 transition-colors ${isDraggingOver ? 'bg-purple-100 dark:bg-purple-900/30' : ''}`} style={{maxHeight: 'calc(100vh - 250px)'}}>
+      <div className={`task-list p-2 space-y-2 overflow-y-auto flex-1 transition-colors ${isDraggingOver ? 'bg-primary/10' : ''}`} style={{maxHeight: 'calc(100vh - 300px)'}}>
         {tasks.map((task) => (
           <TaskCard key={task.id} task={task} users={users} sourceColumnId={column.id} onSelectTask={onSelectTask} />
         ))}
@@ -109,9 +109,9 @@ const Column: React.FC<ColumnProps> = ({ column, tasks, users, onDragEnd, onAddT
           <div className="h-20 border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg bg-gray-200/50 dark:bg-gray-600/30"></div>
         )}
       </div>
-      <div className="p-1 mt-auto">
+      <div className="p-2 mt-auto">
         {isAddingCard ? (
-          <div className="p-1 space-y-2">
+          <div className="p-1 space-y-2 bg-white dark:bg-gray-800 rounded-lg shadow-md-soft border border-gray-200 dark:border-gray-700">
             <textarea
               ref={textareaRef}
               value={newCardTitle}
@@ -126,7 +126,7 @@ const Column: React.FC<ColumnProps> = ({ column, tasks, users, onDragEnd, onAddT
                 {selectedAssigneeIds.length > 0 ? `${selectedAssigneeIds.length} assignees` : 'Assign users'}
               </button>
               {isAssigneeDropdownOpen && (
-                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg-soft">
                   {Object.values(users).map(user => (
                     <label key={user.id} className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                       <input type="checkbox" checked={selectedAssigneeIds.includes(user.id)} onChange={() => toggleAssignee(user.id)} className="form-checkbox h-4 w-4 text-primary rounded focus:ring-primary"/>
@@ -163,7 +163,7 @@ const Column: React.FC<ColumnProps> = ({ column, tasks, users, onDragEnd, onAddT
           canAddTask && (
             <button
               onClick={() => setIsAddingCard(true)}
-              className="w-full h-10 flex items-center justify-start p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 hover:text-gray-700 dark:hover:text-gray-200 rounded-md transition-colors"
+              className="w-full h-10 flex items-center justify-start p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-500/10 dark:hover:bg-white/10 hover:text-primary dark:hover:text-purple-300 rounded-md transition-colors group"
             >
               <PlusIcon className="h-5 w-5" />
               <span className="ml-2 text-sm font-medium">Add a card</span>

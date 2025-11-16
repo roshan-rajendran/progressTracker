@@ -26,7 +26,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onUpdateUser, onNavigat
         <button onClick={() => onNavigate('board')} className="text-sm text-primary hover:underline mb-4">&larr; Back to board</button>
         <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
         
-        <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
+        <div className="bg-white dark:bg-gray-800 shadow-lg-soft rounded-lg p-6 flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
             <img src={user.avatarUrl} alt={user.name} className="h-32 w-32 rounded-full ring-4 ring-primary/20" />
             <div className="flex-1 w-full space-y-4">
                 <div>
@@ -43,7 +43,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onUpdateUser, onNavigat
                          <button
                             onClick={handleSave}
                             disabled={name === user.name || !name.trim()}
-                            className="inline-flex items-center px-4 py-2 border border-l-0 border-primary bg-primary text-white rounded-r-md text-sm font-medium hover:bg-primary-hover disabled:bg-gray-400 dark:disabled:bg-gray-500 disabled:cursor-not-allowed"
+                            className="inline-flex items-center px-4 py-2 border border-l-0 border-primary bg-primary-gradient text-white rounded-r-md text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
                          >
                             Save
                         </button>

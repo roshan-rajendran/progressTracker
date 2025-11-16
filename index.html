@@ -4,18 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zenith Projects</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
             colors: {
-              'primary': '#6D28D9',
-              'primary-hover': '#5B21B6',
-              'secondary': '#1F2937',
-              'light': '#F9FAFB',
-              'gray-medium': '#D1D5DB',
+              'primary': '#7C3AED',
+              'primary-hover': '#6D28D9',
+              'secondary': '#111827',
+              'light': '#F9FAFB', // Slightly lighter gray for light mode
+              'dark-blue': '#0F172A', // Richer dark blue for dark mode
+              'accent': '#EC4899',
+            },
+            boxShadow: {
+              'md-soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04)',
+              'lg-soft': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.04)',
+              'xl-soft': '0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.06)',
+            },
+            backgroundImage: {
+              'primary-gradient': 'linear-gradient(to right, #8B5CF6, #7C3AED)',
             },
           },
         },
@@ -39,7 +54,7 @@
 }
 </script>
 </head>
-  <body class="bg-light dark:bg-gray-900 antialiased">
+  <body class="bg-light dark:bg-dark-blue antialiased font-sans">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

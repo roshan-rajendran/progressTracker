@@ -14,13 +14,13 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, onNavigate }) =>
   const { logout } = useAuth();
 
   return (
-    <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 w-full z-20 flex-shrink-0 transition-colors duration-300">
+    <header className="sticky top-0 bg-light/80 dark:bg-dark-blue/80 backdrop-blur-lg border-b border-gray-200/50 dark:border-gray-700/50 w-full z-30 flex-shrink-0 transition-colors duration-300 h-16">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
              <button
               onClick={onToggleSidebar}
-              className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              className="md:hidden p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
               aria-label="Open sidebar"
             >
               <MenuIcon className="h-6 w-6" />
@@ -33,14 +33,14 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, onNavigate }) =>
           <div className="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
             <div className="max-w-lg w-full lg:max-w-xs">
               <label htmlFor="search" className="sr-only">Search</label>
-              <div className="relative">
+              <div className="relative text-gray-400 focus-within:text-gray-600">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <SearchIcon className="h-5 w-5 text-gray-400" />
+                  <SearchIcon className="h-5 w-5" />
                 </div>
                 <input
                   id="search"
                   name="search"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md leading-5 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-lg leading-5 bg-gray-200/50 dark:bg-gray-800/50 text-gray-800 dark:text-gray-200 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-gray-900 focus:border-gray-300 dark:focus:border-gray-600 focus:ring-2 focus:ring-primary/50 sm:text-sm transition"
                   placeholder="Search projects..."
                   type="search"
                 />
@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, onNavigate }) =>
             </div>
           </div>
           <div className="flex items-center">
-            <button className="ml-2 p-1 rounded-full text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-800">
+            <button className="ml-2 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-dark-blue">
               <span className="sr-only">View notifications</span>
               <BellIcon className="h-6 w-6" />
             </button>
@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, onNavigate }) =>
               <div>
                 <button 
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-800"
+                  className="bg-white dark:bg-gray-800 rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-dark-blue"
                   aria-haspopup="true"
                   aria-expanded={isMenuOpen}
                 >
@@ -70,7 +70,7 @@ const Header: React.FC<HeaderProps> = ({ user, onToggleSidebar, onNavigate }) =>
               </div>
               {isMenuOpen && (
                  <div
-                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-xl-soft py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none"
                     role="menu"
                     aria-orientation="vertical"
                     aria-labelledby="user-menu-button"

@@ -9,11 +9,11 @@ interface TaskCardProps {
   onSelectTask: (taskId: string) => void;
 }
 
-const statusStyles: { [key in TaskStatus]: { indicator: string; text: string } } = {
-  'Backlog': { indicator: 'bg-gray-400', text: 'text-gray-800 dark:text-gray-200' },
-  'In Progress': { indicator: 'bg-blue-500', text: 'text-blue-800 dark:text-blue-200' },
-  'Blocked': { indicator: 'bg-red-500', text: 'text-red-800 dark:text-red-200' },
-  'Completed': { indicator: 'bg-green-500', text: 'text-green-800 dark:text-green-200' },
+const statusStyles: { [key in TaskStatus]: { indicator: string; text: string, bg: string } } = {
+  'Backlog': { indicator: 'bg-gray-400', text: 'text-gray-800 dark:text-gray-300', bg: 'bg-gray-200/50 dark:bg-gray-600/30' },
+  'In Progress': { indicator: 'bg-blue-500', text: 'text-blue-800 dark:text-blue-300', bg: 'bg-blue-500/10 dark:bg-blue-500/20' },
+  'Blocked': { indicator: 'bg-red-500', text: 'text-red-800 dark:text-red-300', bg: 'bg-red-500/10 dark:bg-red-500/20' },
+  'Completed': { indicator: 'bg-green-500', text: 'text-green-800 dark:text-green-300', bg: 'bg-green-500/10 dark:bg-green-500/20' },
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, users, sourceColumnId, onSelectTask }) => {
@@ -47,15 +47,15 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, users, sourceColumnId, onSele
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onClick={() => onSelectTask(task.id)}
-      className={`relative task-card bg-white dark:bg-gray-800 p-3 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg hover:border-primary-hover dark:hover:border-primary-hover cursor-pointer active:cursor-grabbing transition-all duration-200 ${isPastDue ? 'border-l-4 border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-l-4 border-transparent'}`}
+      className={`relative task-card bg-white dark:bg-gray-800 p-3 rounded-lg shadow-md-soft border border-gray-200 dark:border-gray-700/50 hover:shadow-xl-soft hover:-translate-y-1 hover:border-primary/50 cursor-pointer active:cursor-grabbing transition-all duration-300 ${isPastDue ? 'border-l-4 border-red-400 bg-red-50 dark:bg-red-900/20' : 'border-l-4 border-transparent'}`}
     >
-      <div className="flex items-center mb-2">
-        <span className={`px-2 py-1 text-xs font-semibold rounded-full flex items-center bg-opacity-20 ${currentStatusStyle.indicator} ${currentStatusStyle.text}`}>
+      <div className="flex items-center mb-3">
+        <span className={`px-2 py-1 text-xs font-semibold rounded-full flex items-center ${currentStatusStyle.bg} ${currentStatusStyle.text}`}>
           <span className={`h-2 w-2 rounded-full mr-2 ${currentStatusStyle.indicator}`}></span>
           {task.status}
         </span>
       </div>
-      <h4 className={`font-medium text-sm mb-2 ${isPastDue ? 'text-red-600 dark:text-red-400' : 'text-gray-800 dark:text-gray-100'}`}>{task.title}</h4>
+      <h4 className={`font-semibold text-sm mb-2 ${isPastDue ? 'text-red-600 dark:text-red-400' : 'text-gray-800 dark:text-gray-100'}`}>{task.title}</h4>
       <div className="flex flex-wrap gap-1 mb-3">
         {task.tags.map(tag => (
           <span key={tag.name} className={`px-2 py-0.5 text-xs font-semibold rounded-full ${tag.color} dark:bg-opacity-80`}>
@@ -63,7 +63,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, users, sourceColumnId, onSele
           </span>
         ))}
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mt-4 pt-2 border-t border-gray-200 dark:border-gray-700/50">
         <div className="flex items-center">
           <div className="flex -space-x-2">
             {assignees.map(user => (

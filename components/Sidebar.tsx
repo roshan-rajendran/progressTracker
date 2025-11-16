@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { HomeIcon, BoardIcon, SettingsIcon, PlusIcon, XIcon } from './Icons';
+import { CalendarIcon, BoardIcon, SettingsIcon, PlusIcon, XIcon } from './Icons';
+import SidebarCalendar from './SidebarCalendar';
+import { ViewType } from '../types';
 
 interface SidebarProps {
   activeProject: string | null;
@@ -8,11 +10,26 @@ interface SidebarProps {
   onAddNewProject: (projectName: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  currentView: 'board' | 'profile' | 'settings';
-  onNavigate: (view: 'board' | 'profile' | 'settings') => void;
+  currentView: ViewType;
+  onNavigate: (view: ViewType) => void;
+  onSelectDate: (date: Date) => void;
+  selectedDate: Date;
+  datesWithTasks: Set<string>;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeProject, setActiveProject, projects, onAddNewProject, isOpen, onClose, currentView, onNavigate }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  activeProject, 
+  setActiveProject, 
+  projects, 
+  onAddNewProject, 
+  isOpen, 
+  onClose, 
+  currentView, 
+  onNavigate,
+  onSelectDate,
+  selectedDate,
+  datesWithTasks
+}) => {
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [newProjectName, setNewProjectName] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,32 +48,31 @@ const Sidebar: React.FC<SidebarProps> = ({ activeProject, setActiveProject, proj
     }
   };
 
+  const handleCalendarNav = () => {
+    onSelectDate(new Date());
+    onNavigate('calendar');
+    onClose();
+  };
+
   const sidebarContent = (
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-          <nav className="mt-5 flex-1 px-2 space-y-1">
-            <a 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); onNavigate('board'); }}
-              className={`${currentView === 'board' && activeProject ? 'bg-purple-100 text-primary dark:bg-purple-900/50 dark:text-purple-300' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'} group flex items-center px-2 py-2 text-sm font-medium rounded-md`}
-            >
-              <HomeIcon className="mr-3 h-6 w-6" />
-              Dashboard
-            </a>
-            <div className="pt-4">
-              <div className="px-2 flex justify-between items-center">
+          <nav className="flex-1 px-2 space-y-4">
+            {/* Projects Section */}
+            <div>
+              <div className="px-2 flex justify-between items-center mb-2">
                 <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Projects
                 </h3>
                  <button 
                   onClick={() => setIsAddingProject(true)}
-                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                  className="p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
                   aria-label="Add new project"
                  >
                    <PlusIcon className="h-5 w-5"/>
                 </button>
               </div>
-              <div className="mt-2 space-y-1">
+              <div className="space-y-1">
                 {isAddingProject && (
                    <div className="p-2">
                      <input
@@ -79,23 +95,53 @@ const Sidebar: React.FC<SidebarProps> = ({ activeProject, setActiveProject, proj
                     key={project}
                     href="#"
                     onClick={(e) => { e.preventDefault(); setActiveProject(project);}}
-                    className={`${
-                      project === activeProject && currentView === 'board'
-                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
-                    } group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors duration-200`}
+                    className={`
+                      group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 relative
+                      ${
+                        project === activeProject && currentView === 'board'
+                          ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-purple-300'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-500/5 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                      }
+                    `}
                   >
-                    <BoardIcon className="mr-3 h-6 w-6 text-gray-400 dark:text-gray-500" />
-                    {project}
+                    {project === activeProject && currentView === 'board' && (
+                      <span className="absolute left-0 top-1 bottom-1 w-1 bg-primary rounded-r-full"></span>
+                    )}
+                    <BoardIcon className="mr-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <span className="truncate">{project}</span>
                   </a>
                 ))}
               </div>
             </div>
+            
+            {/* Calendar Section */}
+            <div>
+              <a
+                href="#"
+                onClick={(e) => { e.preventDefault(); handleCalendarNav(); }}
+                className={`group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    currentView === 'calendar'
+                    ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-purple-300'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-500/5 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                <CalendarIcon className="mr-3 h-5 w-5" />
+                Calendar
+              </a>
+              <div className="pt-2">
+                 <SidebarCalendar 
+                  onSelectDate={onSelectDate} 
+                  selectedDate={selectedDate}
+                  datesWithTasks={datesWithTasks}
+                />
+              </div>
+            </div>
+
           </nav>
         </div>
-        <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 p-4">
+        <div className="flex-shrink-0 flex border-t border-gray-200 dark:border-gray-700 p-2">
           <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('settings');}} className="flex-shrink-0 w-full group block">
-             <div className={`flex items-center p-2 rounded-md ${currentView === 'settings' ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}>
+             <div className={`flex items-center p-2 rounded-md ${currentView === 'settings' ? 'bg-gray-200 dark:bg-gray-700' : 'hover:bg-gray-500/5 dark:hover:bg-gray-700/50'}`}>
                 <SettingsIcon className="mr-3 h-6 w-6 text-gray-400 dark:text-gray-500 group-hover:text-gray-500 dark:group-hover:text-gray-400" />
                  <p className={`text-sm font-medium ${currentView === 'settings' ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white'}`}>
                     Settings
@@ -112,12 +158,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeProject, setActiveProject, proj
       <div className={`fixed inset-0 flex z-40 md:hidden ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {/* Overlay */}
         <div 
-          className={`fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
+          className={`fixed inset-0 bg-black/60 transition-opacity ${isOpen ? 'opacity-100' : 'opacity-0'}`}
           onClick={onClose}
         ></div>
         
         {/* Sidebar Panel */}
-        <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-white dark:bg-gray-800 transform transition-transform ease-in-out duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`relative flex-1 flex flex-col max-w-xs w-full bg-light dark:bg-gray-800 transform transition-transform ease-in-out duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
@@ -133,7 +179,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeProject, setActiveProject, proj
 
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex md:flex-shrink-0">
-        <div className="w-64 bg-white dark:bg-gray-800 flex-shrink-0 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-colors duration-300">
+        <div className="w-64 bg-light dark:bg-gray-800 flex-shrink-0 border-r border-gray-200 dark:border-gray-700/50 flex flex-col transition-colors duration-300">
            {sidebarContent}
         </div>
       </aside>

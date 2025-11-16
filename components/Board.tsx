@@ -43,7 +43,7 @@ const Board: React.FC<BoardProps> = ({ columns, tasks, users, columnOrder, onDra
         {currentUserRole === 'Admin' && (
              <button
                 onClick={onManageMembers}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-md-soft text-white bg-primary-gradient hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-opacity"
             >
                 <UsersIcon className="h-5 w-5 mr-2" />
                 Manage Members
@@ -72,7 +72,7 @@ const Board: React.FC<BoardProps> = ({ columns, tasks, users, columnOrder, onDra
         })}
         <div className="w-full md:w-72 flex-shrink-0">
           {isAddingColumn ? (
-            <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-2">
+            <div className="bg-white/50 dark:bg-secondary/50 rounded-lg p-2 shadow-md-soft">
               <input
                 ref={inputRef}
                 value={newColumnTitle}
@@ -98,10 +98,10 @@ const Board: React.FC<BoardProps> = ({ columns, tasks, users, columnOrder, onDra
             canPerformActions && (
             <button
               onClick={() => setIsAddingColumn(true)}
-              className="w-full h-12 flex items-center justify-center bg-gray-200/50 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-lg transition-colors"
+              className="w-full h-12 flex items-center justify-center bg-transparent hover:bg-white/50 dark:hover:bg-dark-blue/50 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-solid hover:border-gray-400 dark:hover:border-gray-500 rounded-lg transition-all duration-200 group"
             >
-              <PlusIcon className="h-5 w-5 text-gray-500 dark:text-gray-400"/>
-              <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300">Add another list</span>
+              <PlusIcon className="h-5 w-5 text-gray-500 dark:text-gray-400 group-hover:text-primary transition-colors"/>
+              <span className="ml-2 text-sm font-medium text-gray-600 dark:text-gray-300 group-hover:text-primary transition-colors">Add another list</span>
             </button>
             )
           )}

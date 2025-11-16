@@ -68,11 +68,11 @@ const ManageMembersModal: React.FC<ManageMembersModalProps> = ({ projectUsers, p
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl-soft w-full max-w-lg max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
         <div className="p-4 border-b dark:border-gray-700 flex justify-between items-center">
@@ -145,9 +145,9 @@ const ManageMembersModal: React.FC<ManageMembersModalProps> = ({ projectUsers, p
            </div>
         </div>
 
-        <div className="flex justify-end p-4 border-t dark:border-gray-700">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500">Cancel</button>
-          <button onClick={handleSaveChanges} className="ml-3 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-hover">Save Changes</button>
+        <div className="flex justify-end p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-dark-blue/50 rounded-b-lg">
+          <button onClick={onClose} className="px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 text-sm font-medium">Cancel</button>
+          <button onClick={handleSaveChanges} className="ml-3 px-4 py-2 bg-primary-gradient text-white rounded-md hover:opacity-90 shadow-md-soft text-sm font-medium transition-opacity">Save Changes</button>
         </div>
       </div>
     </div>

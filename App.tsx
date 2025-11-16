@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Board from './components/Board';
@@ -7,6 +7,7 @@ import ManageMembersModal from './components/ManageMembersModal';
 import LoginPage from './components/LoginPage';
 import ProfilePage from './components/ProfilePage';
 import SettingsPage from './components/SettingsPage';
+import CalendarView from './components/CalendarView';
 import { initialData, allUsers as globalAllUsers } from './data/initialData';
 import type { AllProjectsData, ProjectData, Task, ColumnData, User, Role } from './types';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -19,7 +20,8 @@ const AppContent: React.FC = () => {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isManageMembersModalOpen, setIsManageMembersModalOpen] = useState(false);
-  const [view, setView] = useState<'board' | 'profile' | 'settings'>('board');
+  const [view, setView] = useState<'board' | 'profile' | 'settings' | 'calendar'>('board');
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
@@ -40,14 +42,14 @@ const AppContent: React.FC = () => {
   const projectNames = Object.keys(userProjects);
   
   useEffect(() => {
-    if (user && !activeProject && projectNames.length > 0) {
+    if (user && !activeProject && projectNames.length > 0 && view === 'board') {
       setActiveProject(projectNames[0]);
     } else if (user && activeProject && !userProjects[activeProject]) {
       setActiveProject(projectNames.length > 0 ? projectNames[0] : null);
     } else if (!user) {
       setActiveProject(null);
     }
-  }, [user, data, projectNames, activeProject, userProjects]);
+  }, [user, data, projectNames, activeProject, userProjects, view]);
 
 
   useEffect(() => {
@@ -64,36 +66,38 @@ const AppContent: React.FC = () => {
   const currentProjectData = activeProject ? userProjects[activeProject] : null;
   const currentUserRole = (user && currentProjectData?.members) ? currentProjectData.members[user.id] : null;
 
-  const handleSelectTask = (taskId: string) => {
-    if (currentProjectData && currentProjectData.tasks[taskId]) {
-      setSelectedTask(currentProjectData.tasks[taskId]);
+  const handleSelectTask = (taskId: string, projectId?: string) => {
+    const projectToSearch = projectId ? data[projectId] : currentProjectData;
+    if (projectToSearch && projectToSearch.tasks[taskId]) {
+        setSelectedTask(projectToSearch.tasks[taskId]);
     }
   };
+
 
   const handleCloseModal = () => {
     setSelectedTask(null);
   };
 
   const handleUpdateTask = (updatedTask: Task) => {
-    if (!activeProject) return;
+    const projectOfTask = Object.entries(data).find(([_, pData]) => pData.tasks[updatedTask.id]);
+    if (!projectOfTask) return;
+    const [projectName, projectData] = projectOfTask;
+
     setData(prevData => {
-      const currentProject = prevData[activeProject];
       const newTasks = {
-        ...currentProject.tasks,
+        ...projectData.tasks,
         [updatedTask.id]: updatedTask,
       };
-      
       const newProjectData: ProjectData = {
-        ...currentProject,
+        ...projectData,
         tasks: newTasks,
       };
-
       return {
         ...prevData,
-        [activeProject]: newProjectData,
+        [projectName]: newProjectData,
       };
     });
-    // Do not close modal on comment update
+
     if(updatedTask.comments?.length === selectedTask?.comments?.length) {
         handleCloseModal();
     } else {
@@ -213,6 +217,7 @@ const AppContent: React.FC = () => {
       [newProjectName]: newProject
     }));
     setActiveProject(newProjectName);
+    setView('board');
   }, [data, user]);
   
   const handleAddNewColumn = useCallback((columnTitle: string) => {
@@ -271,9 +276,27 @@ const AppContent: React.FC = () => {
     });
   };
 
+  const datesWithTasks = useMemo(() => {
+    const dates = new Set<string>();
+    Object.values(userProjects).forEach(project => {
+        Object.values(project.tasks).forEach(task => {
+            if (task.dueDate) {
+                dates.add(task.dueDate.split('T')[0]); // Add YYYY-MM-DD
+            }
+        });
+    });
+    return dates;
+  }, [userProjects]);
+
+  const handleDateSelect = (date: Date) => {
+      setSelectedDate(date);
+      setView('calendar');
+      setIsSidebarOpen(false);
+  };
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-light dark:bg-gray-900">
+      <div className="flex justify-center items-center h-screen bg-light dark:bg-dark-blue">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
@@ -295,6 +318,12 @@ const AppContent: React.FC = () => {
         return <ProfilePage user={user} onUpdateUser={handleUserUpdate} onNavigate={setView} />;
       case 'settings':
         return <SettingsPage isDarkMode={isDarkMode} onToggleTheme={() => setIsDarkMode(!isDarkMode)} />;
+      case 'calendar':
+        return <CalendarView 
+          selectedDate={selectedDate} 
+          projects={userProjects} 
+          onSelectTask={handleSelectTask}
+        />;
       case 'board':
       default:
         return currentProjectData && activeProject ? (
@@ -328,13 +357,13 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-light dark:bg-gray-900 font-sans transition-colors duration-300">
+    <div className="h-screen bg-light dark:bg-dark-blue transition-colors duration-300 overflow-hidden">
       <Header 
         user={user}
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         onNavigate={setView}
       />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex h-[calc(100vh-64px)]">
         <Sidebar 
           activeProject={activeProject} 
           setActiveProject={handleSelectProject} 
@@ -344,19 +373,28 @@ const AppContent: React.FC = () => {
           onClose={() => setIsSidebarOpen(false)}
           currentView={view}
           onNavigate={setView}
+          onSelectDate={handleDateSelect}
+          selectedDate={selectedDate}
+          datesWithTasks={datesWithTasks}
         />
         <main className="flex-1 flex flex-col overflow-y-auto">
           {renderContent()}
         </main>
       </div>
-      {selectedTask && currentProjectData && (
+      {selectedTask && (
         <TaskDetailModal
           task={selectedTask}
-          users={currentProjectData.projectUsers}
+          users={
+            // Find the project this task belongs to, to pass the correct user list
+            Object.values(data).find(p => p.tasks[selectedTask.id])?.projectUsers || {}
+          }
           onClose={handleCloseModal}
           onUpdate={handleUpdateTask}
           currentUser={user}
-          currentUserRole={currentUserRole}
+          currentUserRole={
+            // Find the project this task belongs to, to pass the correct user role
+            user && selectedTask && Object.values(data).find(p => p.tasks[selectedTask.id])?.members[user.id] || null
+          }
         />
       )}
       {isManageMembersModalOpen && currentProjectData && (
