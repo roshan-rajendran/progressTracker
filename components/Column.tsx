@@ -46,7 +46,9 @@ const Column: React.FC<ColumnProps> = ({ column, tasks, users, onDragEnd, onAddT
     const sourceColumnId = e.dataTransfer.getData('sourceColumnId');
     
     const dropTarget = e.target as HTMLElement;
-    const taskList = dropTarget.closest('.task-list');
+    const columnElement = e.currentTarget as HTMLElement;
+    const taskList = columnElement.querySelector('.task-list');
+    
     if (!taskList) return;
 
     const cards = Array.from(taskList.children).filter(c => c.classList.contains('task-card'));
